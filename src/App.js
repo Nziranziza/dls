@@ -53,7 +53,7 @@ function App() {
     axios
       .get("dates")
       .then(async ({ data: { data } }) => {
-        for (const date of data.slice(98)) {
+        for (const date of data) {
           await getSchedules(date);
         }
         setLoading(false);
@@ -135,6 +135,8 @@ function App() {
                 ))}
             </ol>
             {loading && <div className="text-center">Loading...</div>}
+            <div className="text-center">Using Irembo Public API</div>
+            <div className="text-center">© {moment().format('YYYY')}</div>
           </div>
         </div>
       </main>
