@@ -38,7 +38,7 @@ function App() {
         ...dlExamSchedules.filter(
           (sch) =>
             sch.dlDrivingLicenseCategoryId === 1 &&
-            sch.availableSeats !== 0
+            sch.availableSeats !== 0 && moment(sch.examStartDate).isAfter(moment())
         ),
       ]);
       return true;
@@ -53,7 +53,8 @@ function App() {
     axios
       .get("dates")
       .then(async ({ data: { data } }) => {
-        for (const date of data) {
+        const dates = data?.filter((date) => moment(date.replaceAll('_', '-')).isAfter(moment()));
+        for (const date of dates) {
           await getSchedules(date);
         }
         setLoading(false);
