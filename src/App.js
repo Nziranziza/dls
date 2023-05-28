@@ -1,5 +1,5 @@
 import Axios from "axios";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import moment from "moment";
 
 import "./App.css";
@@ -71,7 +71,11 @@ function App() {
     uniqueSchedules.map(({ locationName }) => locationName)
   );
   const uniqueDisticts = Array.from(settedDistricts).sort();
-
+  const distSelectorPlaceholders = useMemo(() => [
+    Math.floor(Math.random() * 5) + 3,
+    Math.floor(Math.random() * 5) + 3,
+    Math.floor(Math.random() * 5) + 3
+  ], [])
   return (
     <div>
       <header>
@@ -79,8 +83,27 @@ function App() {
       </header>
       <main className="container">
         <div className="row">
+          <div className="col-sm-3 position-relative d-none d-sm-block">
+            <div className="sticky-top pt-2">
+              <h3>Choose a district</h3>
+              {uniqueDisticts.map((dist) => (
+                <div class="form-check" id={dist}>
+                  <input class="form-check-input" onChange={() => setDistrict(dist)} checked={dist === district} type="radio" name="flexRadioDefault" id={dist} />
+                  <label class="form-check-label" for={dist}>
+                    {dist}
+                  </label>
+                </div>
+              ))}
+              {loading && distSelectorPlaceholders.map((num) => <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" />
+                <p class="form-check-label placeholder-glow m-0">
+                  <span className={`placeholder col-${num}`}></span>
+                </p>
+              </div>)}
+            </div>
+          </div>
           <div className="col-12 col-sm-6 position-relative">
-            <div className="ms-4 ps-1 mb-4 sticky-top">
+            <div className="mb-3 sticky-top pt-2 bg-white d-sm-none">
               <select
                 className="form-select"
                 onChange={(e) => setDistrict(e.target.value)}
@@ -93,13 +116,14 @@ function App() {
                   </option>
                 ))}
               </select>
+              <hr className="mb-0" />
             </div>
-            <ol>
+            <ol className="list-group">
               {uniqueSchedules
                 .filter(({ locationName }) => locationName === district)
                 .map((sch, index) => (
-                  <li key={index}>
-                    <div className="card mb-3">
+                  <li key={index} className="list-group-item">
+                    <div className="card my-2">
                       <div className="card-body">
                         <h5 className="card-title">{sch.locationName}</h5>
                         <table className="table table-hover">
@@ -134,8 +158,28 @@ function App() {
                     </div>
                   </li>
                 ))}
+              {loading && <>
+                {new Array(5).fill(0).map(() => <li className="list-group-item">
+                  <div className="card my-2">
+                    <div className="card-body">
+                      <p className="card-text placeholder-glow">
+                        <span className="placeholder col-7"></span>
+                        <span className="placeholder col-4"></span>
+                        <span className="placeholder col-4"></span>
+                        <span className="placeholder col-6"></span>
+                        <span className="placeholder col-8"></span>
+                        <span className="placeholder col-7"></span>
+                        <span className="placeholder col-4"></span>
+                        <span className="placeholder col-4"></span>
+                        <span className="placeholder col-6"></span>
+                        <span className="placeholder col-8"></span>
+                      </p>
+                    </div>
+                  </div>
+                </li>
+                )}
+              </>}
             </ol>
-            {loading && <div className="text-center">Loading...</div>}
             <div className="text-center">Using Irembo Public API</div>
             <div className="text-center">© {moment().format('YYYY')}</div>
           </div>
