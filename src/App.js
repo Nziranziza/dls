@@ -78,7 +78,7 @@ function App() {
   ], [])
   return (
     <div>
-      <header>
+      <header className="sticky-top bg-white">
         <h1 className="text-center">Driving License</h1>
       </header>
       <main className="container">
